@@ -16,7 +16,6 @@ request.onupgradeneeded = ({ target }) => {
 
 request.onsuccess = ({ target }) => {
   db = target.result;
-  // check if app is online before reading from db
   if (navigator.onLine) {
     checkDatabase();
   }
@@ -33,7 +32,6 @@ function saveRecord(record) {
   store.add(record);
 }
 
-// This function runs when we detect that the internet connection is working again. It sends a post request to the server with all the saved data so that the data can be synced with the server, and then it wipes out the existing indexedDb. You can keep as-is, unless you want to change the name of the fetch route.
 function checkDatabase() {
   const transaction = db.transaction(["pending"], "readwrite");
   const store = transaction.objectStore("pending");
@@ -53,7 +51,6 @@ function checkDatabase() {
         return response.json();
       })
       .then(() => {
-        // delete records if successful
         const transaction = db.transaction(["pending"], "readwrite");
         const store = transaction.objectStore("pending");
         store.clear();
@@ -62,5 +59,4 @@ function checkDatabase() {
   };
 }
 
-// listen for app coming back online
 window.addEventListener("online", checkDatabase);
